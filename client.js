@@ -20,8 +20,9 @@ socket.on('connect', function() {
 
 socket.on ('join', function (data) {
 	rl.pause ();
-	console.log ('\n');
-	console.log ('| ' + data.username + ' joined. |\n');
+	readline.cursorTo(process.stdout, 0);
+	readline.clearLine(process.stdout);
+	console.log ('| ' + data.username + ' joined. |');
 	rl.prompt ();
 
 	sendMessage ();
@@ -29,21 +30,22 @@ socket.on ('join', function (data) {
 
 socket.on ('message', function (data) {
 	rl.pause ();
-	console.log ('\n');
+	readline.cursorTo(process.stdout, 0);
+	readline.clearLine(process.stdout);
     console.log (data.username + ': ' + data.message);
     rl.prompt (); 
 });
 
 socket.on ('userLeft', function (data) {
 	rl.pause ();
-	console.log ('\n');
-	console.log ('| ' + data.username + ' left. |\n');
+	readline.cursorTo(process.stdout, 0);
+	readline.clearLine(process.stdout);
+	console.log ('| ' + data.username + ' left. |');
 	rl.prompt ();
 });
 
 function sendMessage () {
 		rl.question ("\x1b[1m\x1b[34m" + username + '\x1b[0m: ', function (input) {
-			console.log ('\n');
 			socket.emit ('message', {message : input});
 			sendMessage ();
 		});

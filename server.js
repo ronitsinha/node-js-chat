@@ -17,27 +17,28 @@ http.listen(3000, function(){
 io.on ('connection', function(socket) {
 	clients[socket.id] = Client (socket);
 	
-	socket.on ('disconnect', function () {	
-		if (clients[socket.id] != null) {
-			leavingUser = clients[socket.id].username; 
-
-			console.log (leavingUser + ' has left');
-			delete clients[socket.id];
-
-			for (var c in clients) {
-				if (clients[c].username != null) {
-					io.to(c).emit ('userLeft', {username: leavingUser});
-				}
-			}
-
-		} else {
-			console.log ('Could not find client: ' + socket.id);
-		}
-	});
-
+	socket.on ('disconnect', onUserLeave);
 	socket.on ('join', onUserJoin);
     socket.on ('message', onMessageSend);
 });
+
+function onUserLeave (data) {
+	if (clients[this.id] != null) {
+		leavingUser = clients[this.id].username; 
+
+		console.log (leavingUser + ' has left');
+		delete clients[this.id];
+
+		for (var c in clients) {
+			if (clients[c].username != null) {
+				io.to(c).emit ('userLeft', {username: leavingUser});
+			}
+		}
+
+	} else {
+		console.log ('Could not find client: ' + this.id);
+	}
+}
 
 function onUserJoin (data) {
 	clients[this.id].username = data.username;
