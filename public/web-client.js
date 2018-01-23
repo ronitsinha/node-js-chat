@@ -1,12 +1,14 @@
 $(function () {
 	var socket = io();
 	var username = null;
-	$('#username').focus();
 	socket.emit ('userlist', {});
 
+  $('#username').focus();
+  $('#users').hide ();
+
 	$('#messageInput').submit(function(){
-		var message = username + ': ' + $('#m').val();
-		$('#messages').append( $('<li>').text( message ) );
+		var message = $('#m').val();
+		$('#messages').append( $('<li>').text( username + ': ' + message ) );
 		socket.emit ('message', {message : message });
 		$('#m').val('');
 		return false;
@@ -47,5 +49,13 @@ $(function () {
   		$('#messages').append($('<li>').text('| ' + username + ' joined. |'));
   		$('#login').hide();
 	  	$('#m').focus();
+    });
+
+    $('#userListViewer').click (function(e) {
+      e.preventDefault ();
+      $('#users').toggle ();
+      var msg = 'error';
+      ($('#users').is(':visible')) ? msg = 'Hide Current Users' : msg = 'Show Current Users';
+      $('#userListViewer').text(msg);
     });
 });
